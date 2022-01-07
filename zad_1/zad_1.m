@@ -21,6 +21,20 @@ hB=111;
 %wspolrzedne xyz lotniska
 [xl,yl,zl] = geo2xyz(phiB,lambdaB,hB,a,e2);
 
+%xyz to neu
+for i = 1:rows
+    [n(i),e(i),u(i)] = xyz2neu(phiB,lambdaB,xs(i),ys(i),zs(i),xl,yl,zl);
+end
+
+%odleglosc skosna
+s = sqrt(n.^2+e.^2+u.^2);
+
+%odleglosc zenitalna
+z = acosd(u./s);
+
+%azymuty
+az = atand(e./n);
+
 % geo to xyz
 function [x,y,z] = geo2xyz(fi, lam, h, a, e2)
     N = a./sqrt(1-e2.*sind(fi).^2);
