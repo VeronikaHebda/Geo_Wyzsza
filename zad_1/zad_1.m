@@ -35,6 +35,28 @@ z = acosd(u./s);
 %azymuty
 az = atand(e./n);
 
+%rysowanie trasy we współrzędnych geodezyjnych
+geoscatter(phi,lambda,5,'.r');
+
+%we wspolrzednych nue 
+figure;
+%wyswietlanie punktu za ktorym zachodzi za horyzontem
+plot3(n,e,u, 'o-','MarkerFaceColor','red','MarkerEdgeColor','red','MarkerIndices')
+title('Trasa lotu w układzie topocentrycznym (n,e,u)');
+xlabel('n');
+ylabel('e');
+zlabel('u');
+grid on
+
+%we wspolrzednych xyz
+figure;
+plot3(xs,ys,zs); 
+title('Trasa lotu w układzie kartezjańskim (x,y,z)');
+xlabel('x');
+ylabel('y');
+zlabel('z');
+grid on
+
 % geo to xyz
 function [x,y,z] = geo2xyz(fi, lam, h, a, e2)
     N = a./sqrt(1-e2.*sind(fi).^2);
