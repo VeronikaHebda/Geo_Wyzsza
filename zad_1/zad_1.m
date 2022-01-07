@@ -16,6 +16,10 @@ phiB=50.033333;
 lambdaB=8.570556;
 hB=111;
 
+%wspolrzedne xyz samolotu
+[xs,ys,zs] = geo2xyz(phi,lambda,h,a,e2);
+%wspolrzedne xyz lotniska
+[xl,yl,zl] = geo2xyz(phiB,lambdaB,hB,a,e2);
 
 % geo to xyz
 function [x,y,z] = geo2xyz(fi, lam, h, a, e2)
