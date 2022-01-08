@@ -11,7 +11,8 @@ fi1 = 50.25
 lam2 = 21.25
 fi2 = 50
 
-#bedzie liczona odleglosc punkty A i D
+#bedzie liczona odleglosc punkty C i B
+
 #punkt sredniej szerokosci
 fi_aryt = (fi1 + fi2)/2
 lam_aryt = (lam1 + lam2)/2
@@ -43,29 +44,43 @@ def vincent(lam1,fi1,lam2,fi2):
             u2 = ((a ** 2 - b ** 2) / b ** 2) * cosa2
             A = 1 + (u2 / 16384) * (4096 + u2 * (-768 + u2 * (320 - 175 * u2)))
             B = (u2 / 1024) * (256 + u2 * (-128 + u2 * (74 - 47 * u2)))
-            delta_sigma = B * sino * (cos2om + 0.25 * B * (
-                        coso * (-1 + 2 * (cos2om ** 2)) - (1 / 6) * B * cos2om * (-3 + 4 * (sina ** 2)) * (
-                            -3 + 4 * (cos2om ** 2))))
+            delta_sigma = B * sino * (cos2om + 0.25 * B * (coso * (-1 + 2 * (cos2om ** 2)) - (1 / 6) * B * cos2om * (-3 + 4 * (sina ** 2)) * (-3 + 4 * (cos2om ** 2))))
             Scb = b * A * (o - delta_sigma)
             x = m.cos(Ub) * m.sin(L_last)
             y = m.cos(Ua) * m.sin(Ub) - m.sin(Ua) * m.cos(Ub) * m.cos(L_last)
-            Aab = m.atan(x/y)
-
+            if (x > 0 and y > 0):
+                Aab = m.atan(x / y)
+            elif (x > 0 and y < 0):
+                Aab = m.atan(x / y) + m.pi
+            elif (x < 0 and y < 0):
+                Aab = m.atan(x / y) + m.pi
+            elif (x < 0 and y > 0):
+                Aab = m.atan(x / y) + 2* m.pi
 
             c = m.cos(Ua) * m.sin(L_last)
             d = -m.sin(Ua) * m.cos(Ub) + m.sin(Ub) * m.cos(Ua) * m.cos(L_last)
-
-            Aba = m.atan(c/d)
+            if (c > 0 and d > 0):
+                Aba = m.atan(c / d) + m.pi
+            elif (c > 0 and d < 0):
+                Aba = m.atan(c / d) + 2* m.pi
+            elif (c < 0 and d < 0):
+                Aba = m.atan(c / d) + 2* m.pi
+            elif (c < 0 and d > 0):
+                Aba = m.atan(c / d) + 3* m.pi
             break
         else:
             L = L1
-    return Scb,Aab,Aba
+    return Scb, Aab, Aba
 
-Scb,Aba,Aab = vincent(lam1,fi1,lam2,fi2)
+Scb,Aab,Aba = vincent(lam1,fi1,lam2,fi2)
 
-print(Scb,Aba,Aab)
 
 #algorytm Kivioja
+def M(phi):
+    return (a*(1 - e2)) / m.sqrt((1 - e2*(m.sin(m.radians(phi))**2))**3)
+
+def N(phi):
+    return a / m.sqrt(1 - e2*(m.sin(m.radians(phi))**2))
 
 Scb = Scb/2
 ds = 1000
@@ -81,16 +96,16 @@ L.append(lam1)
 
 #ds to jeden fragment
 for i in range(0,n+1):
-    dfi = ds*m.cos(A[i])/(a*(1 - e2)) / m.sqrt((1 - e2*(m.sin(m.radians(F[i]))**2))**3)
-    dA = m.sin(A[i])*m.tan(m.radians(F[i]))*ds/a / m.sqrt(1 - e2*(m.sin(m.radians(F[i]))**2))
+    dfi = ds*m.cos(A[i])/M(F[i])
+    dA = m.sin(A[i])*m.tan(m.radians(F[i]))*ds/N(F[i])
 
     Bm = F[i] + 0.5 * m.degrees(dfi)
     Aabm = A[i] + 0.5 * dA
 
-    dBm = (m.cos(Aabm) * ds) / (a*(1 - e2)) / m.sqrt((1 - e2*(m.sin(m.radians(Bm))**2))**3)
-    dlamb=(m.sin(Aabm)*ds)/(a / m.sqrt(1 - e2*(m.sin(m.radians(Bm))**2))*m.cos(m.radians(Bm)))
+    dBm = (m.cos(Aabm) * ds) / M(Bm)
+    dlamb=(m.sin(Aabm)*ds)/(N(Bm)*m.cos(m.radians(Bm)))
 
-    dAm=(m.sin(Aabm)*m.tan(m.radians(Bm))*ds)/a / m.sqrt(1 - e2*(m.sin(m.radians(Bm))**2))
+    dAm=(m.sin(Aabm)*m.tan(m.radians(Bm))*ds)/N(Bm)
 
     F.append(F[i]+m.degrees(dBm))
     L.append(L[i]+m.degrees(dlamb))
@@ -98,4 +113,40 @@ for i in range(0,n+1):
     if i+1 == n:
         ds = ostatni
 
-print(F[-1],L[-1])
+fi = konwersja(F[-1])
+lam = konwersja(L[-1])
+
+print("Punkt średniej szerokości:",fi_aryt,",",lam_aryt)
+
+Aab = np.rad2deg(Aab)
+Aba = np.rad2deg(Aba)
+print("Azymuty AD:", Aab,",",Aba)
+
+print("Wspolrzedne punktu srodkowego AD:",fi,",",lam)
+Phi = F[-1]
+La = L[-1]
+Az = A[-1]
+
+#odleglosc i azymuty miedzy dwoma wyznacoznymi punktami
+
+S,Aef,Afe = vincent(lam_aryt,fi_aryt,La,Phi)
+S = round(S,3)
+
+Aef = np.rad2deg(Aef)
+Afe = np.rad2deg(Afe)
+
+print("Odleglosc między dwoma punktami srodkowymi:", S,"m")
+print("Azymuty dwoch punktow srodkowych:", Aef,",",Afe)
+
+#obliczanie Pola czworokąta
+e = m.sqrt(e2)
+fi1 = np.deg2rad(fi1)
+fi2 = np.deg2rad(fi2)
+lam1 = np.deg2rad(lam1)
+lam2 = np.deg2rad(lam2)
+P = (b**2*(lam2-lam1)/2)*(((m.sin(fi2)/(1-e2*(m.sin(fi2)**2)))+(1/(2*e))*m.log((1+e*m.sin(fi2))/(1-e*m.sin(fi2))))
+- (((m.sin(fi1)/(1-e2*(m.sin(fi1)**2)))+(1/(2*e))*m.log((1+e*m.sin(fi1))/(1-e*m.sin(fi1))))))
+P = abs(P)
+P = round(P,6)
+
+print("Pole prostokąta:",P,"m²")
