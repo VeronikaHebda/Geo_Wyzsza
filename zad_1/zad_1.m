@@ -1,5 +1,5 @@
 %% Weronika Hebda
-function main
+
 clear; 
 a=6378137; 
 e2=0.00669437999013; 
@@ -32,8 +32,25 @@ s = sqrt(n.^2+e.^2+u.^2);
 %odleglosc zenitalna
 z = acosd(u./s);
 
+%okreslanie momentu zajscia pod horyzont
+for i = 1:rows
+    idx = find(z >= 90);
+    break
+end
+
 %azymuty
-az = atand(e./n);
+azymut = atand(e./n);
+for i = 1:rows
+    if n(i) > 0 && e(i) < 0
+        azymut(i) = azymut(i) + 360;
+    elseif n(i) < 0 && e(i) > 0
+        azymut(i) = azymut(i) + 180;
+    elseif n(i) < 0 && e(i) < 0
+        azymut(i) = azymut(i) + 180;
+    elseif azymut(i) > 360
+        azymut(i) = azymut(i) - 360;
+    end
+end
 
 %rysowanie trasy we współrzędnych geodezyjnych
 geoscatter(phi,lambda,5,'.r');
@@ -41,8 +58,8 @@ geoscatter(phi,lambda,5,'.r');
 %we wspolrzednych nue 
 figure;
 %wyswietlanie punktu za ktorym zachodzi za horyzontem
-plot3(n,e,u, 'o-','MarkerFaceColor','red','MarkerEdgeColor','red','MarkerIndices')
-title('Trasa lotu w układzie topocentrycznym (n,e,u)');
+plot3(n,e,u, 'o-','MarkerFaceColor','red','MarkerEdgeColor','red','MarkerIndices',idx(1,1))
+title('Trasa lotu w układzie horyzontalnym');
 xlabel('n');
 ylabel('e');
 zlabel('u');
@@ -51,7 +68,7 @@ grid on
 %we wspolrzednych xyz
 figure;
 plot3(xs,ys,zs); 
-title('Trasa lotu w układzie kartezjańskim (x,y,z)');
+title('Trasa lotu w układzie kartezjańskim');
 xlabel('x');
 ylabel('y');
 zlabel('z');
@@ -80,5 +97,4 @@ function [n,e,u] = xyz2neu(fi,lam,xA,yA,zA,xB,yB,zB)
     n = neu(1);
     e = neu(2);
     u = neu(3);
-end
 end
