@@ -113,14 +113,31 @@ for i in range(0,n+1):
     if i+1 == n:
         ds = ostatni
 
+def konwersja(dziesietne):
+    d = int(dziesietne)
+    m = int((dziesietne-d) * 60)
+    s = (dziesietne - d - m/60)*3600
+    s = round(s,5)
+    s = str(s)
+    d = str(d)
+    m = str(m)
+    if len(d) == 1:
+        d = "0" + d
+    if len(m) == 1:
+        m = "0" + m
+    if len(s) == 1:
+        s = "0" + s
+    word = d + '° ' + m + "' " + s + "''"
+    return word
+
 fi = konwersja(F[-1])
 lam = konwersja(L[-1])
 
-print("Punkt średniej szerokości:",fi_aryt,",",lam_aryt)
+print("Punkt średniej szerokości:",konwersja(fi_aryt),",",konwersja(lam_aryt))
 
 Aab = np.rad2deg(Aab)
 Aba = np.rad2deg(Aba)
-print("Azymuty AD:", Aab,",",Aba)
+print("Azymuty AD:", konwersja(Aab),",",konwersja(Aba))
 
 print("Wspolrzedne punktu srodkowego AD:",fi,",",lam)
 Phi = F[-1]
@@ -133,8 +150,9 @@ S,Aef,Afe = vincent(lam_aryt,fi_aryt,La,Phi)
 S = round(S,3)
 
 Aef = np.rad2deg(Aef)
+Aef = konwersja(Aef)
 Afe = np.rad2deg(Afe)
-
+Afe = konwersja(Afe)
 print("Odleglosc między dwoma punktami srodkowymi:", S,"m")
 print("Azymuty dwoch punktow srodkowych:", Aef,",",Afe)
 
