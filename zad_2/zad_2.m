@@ -20,6 +20,66 @@ fi_l=0.25;
 %przeliczanie na liczbe dni juliańskich
 jd = julday(2001,1,24);
 
+godz = [1:25];
+%dla Warszawy%
+[xw,yw,zw,wysw,azymutw] = oblicz(fi_w,lambda_w,alfa,delta);
+
+%wykres wysokości od czasu
+figure(1)
+plot(godz,wysw)
+grid on
+title('Wykres zależności wysokości od czasu dla Warszawy ')
+xlabel('czas [h]');
+ylabel('Wysokość gwiazdy nad horyzontem [°]');
+xticks([0:24])
+
+%wykres azymutu od czasu 
+figure(2)
+plot(godz,azymutw)
+grid on
+title('Wykres zależności azymutu od czasu dla Warszawy')
+xlabel('czas [h]');
+ylabel('azymut [°]');
+xticks([0:24])
+
+
+%rysowanie sfery
+figure(3)
+[x,y,z] = sphere(50); 
+z(z<0) = 0;
+S = surf(x,y,z); 
+S.EdgeColor = 'blue';
+S.FaceAlpha = 0.4;
+light;
+lighting gouraud;
+axis equal;
+hold on 
+scatter3(xw,yw,zw, 'r','filled');
+title('Pozorna wędrówka gwiazdy Sadalsuud dla Warszawy 24.01.2001')
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+
+
+%funkcja na obliczanie wspolrzednych horyzontalnych
+function [x,y,z,wys,azymut] = oblicz(fi,lam,alfa,delta) 
+    for i = 1:25
+        hour(i) = katgodz(2001,01,24,i-1,lam,alfa);
+        zenit(i) = acosd(sind(fi)*sind(delta)+cosd(fi)*cosd(delta)*cosd(hour(i)));
+        a =(-cosd(delta)*sind(hour(i)));
+        b =(cosd(fi)*sind(delta)-sind(fi)*cosd(delta)*cosd(hour(i)));
+        azymut(i) = atand(a/b)
+    
+        wys(i) = 90 - zenit(i);
+    end
+    for i = 1:24
+        x(i) = sind(zenit(i))*cosd(azymut(i)); 
+        y(i) = sind(zenit(i))*sind(azymut(i)); 
+        z(i) = cosd(zenit(i)); 
+    end
+end
+
 
 %przeliczenie daty na kalendarz juliański 
 function jd = julday(y,m,d) 
