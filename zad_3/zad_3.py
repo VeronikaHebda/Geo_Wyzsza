@@ -13,15 +13,16 @@ fi2 = 50
 
 #bedzie liczona odleglosc punkty C i B
 
-#punkt sredniej szerokosci
-fi_aryt = (fi1 + fi2)/2
-lam_aryt = (lam1 + lam2)/2
-
 #dane
 a=6378137
 e2=0.00669437999013
+
 b = a * m.sqrt(1 - e2)
 f = 1 - b/a
+
+#punkt sredniej szerokosci
+fi_aryt = (fi1 + fi2)/2
+lam_aryt = (lam1 + lam2)/2
 
 
 #algorytm iteracyjny vincent
@@ -72,8 +73,6 @@ def vincent(lam1,fi1,lam2,fi2):
             L = L1
     return Scb, Aab, Aba
 
-Scb,Aab,Aba = vincent(lam1,fi1,lam2,fi2)
-
 
 #algorytm Kivioja
 def M(phi):
@@ -82,36 +81,40 @@ def M(phi):
 def N(phi):
     return a / m.sqrt(1 - e2*(m.sin(m.radians(phi))**2))
 
-Scb = Scb/2
-ds = 1000
-n = int(Scb/1000)
-ostatni = Scb%1000
+def Kivioji (S,fi,lam,Az):
+    S = S/2
+    ds = 1000
+    n = int(S/1000)
+    ostatni = S%1000
 
-F = []
-F.append(fi1)
-A = []
-A.append(Aab)
-L = []
-L.append(lam1)
+    F = []
+    F.append(fi)
+    A = []
+    A.append(Az)
+    L = []
+    L.append(lam)
 
-#ds to jeden fragment
-for i in range(0,n+1):
-    dfi = ds*m.cos(A[i])/M(F[i])
-    dA = m.sin(A[i])*m.tan(m.radians(F[i]))*ds/N(F[i])
+    #ds to jeden fragment
+    for i in range(0,n+1):
+        dfi = ds*m.cos(A[i])/M(F[i])
+        dA = m.sin(A[i])*m.tan(m.radians(F[i]))*ds/N(F[i])
 
-    Bm = F[i] + 0.5 * m.degrees(dfi)
-    Aabm = A[i] + 0.5 * dA
+        Bm = F[i] + 0.5 * m.degrees(dfi)
+        Aabm = A[i] + 0.5 * dA
 
-    dBm = (m.cos(Aabm) * ds) / M(Bm)
-    dlamb=(m.sin(Aabm)*ds)/(N(Bm)*m.cos(m.radians(Bm)))
+        dBm = (m.cos(Aabm) * ds) / M(Bm)
+        dlamb=(m.sin(Aabm)*ds)/(N(Bm)*m.cos(m.radians(Bm)))
 
-    dAm=(m.sin(Aabm)*m.tan(m.radians(Bm))*ds)/N(Bm)
+        dAm=(m.sin(Aabm)*m.tan(m.radians(Bm))*ds)/N(Bm)
 
-    F.append(F[i]+m.degrees(dBm))
-    L.append(L[i]+m.degrees(dlamb))
-    A.append(A[i]+dAm)
-    if i+1 == n:
-        ds = ostatni
+        F.append(F[i]+m.degrees(dBm))
+        L.append(L[i]+m.degrees(dlamb))
+        A.append(A[i]+dAm)
+        if i+1 == n:
+            ds = ostatni
+    fi_koncowe = F[-1]
+    lam_koncowe = L[-1]
+    return fi_koncowe,lam_koncowe
 
 def konwersja(dziesietne):
     d = int(dziesietne)
@@ -130,32 +133,42 @@ def konwersja(dziesietne):
     word = d + '° ' + m + "' " + s + "''"
     return word
 
-fi = konwersja(F[-1])
-lam = konwersja(L[-1])
+#uzycie fukncji
 
 print("Punkt średniej szerokości:",konwersja(fi_aryt),",",konwersja(lam_aryt))
 
+#środek AD
+Sad,Aab,Aba = vincent(lam1,fi1,lam2,fi2)
+fi_ad,lam_ad = Kivioji(Sad,fi1,lam1,Aab)
+print("Wspolrzedne punktu srodkowego AD - E:",konwersja(fi_ad),",",konwersja(lam_ad))
+
+#srodek CB
+Scb,Acb,Abc = vincent(lam1,fi2,lam2,fi1)
+fi_cb,lam_cb = Kivioji(Scb,fi2,lam1,Acb)
+
+#azymuty AD
 Aab = np.rad2deg(Aab)
 Aba = np.rad2deg(Aba)
 print("Azymuty AD:", konwersja(Aab),",",konwersja(Aba))
 
-print("Wspolrzedne punktu srodkowego AD:",fi,",",lam)
-Phi = F[-1]
-La = L[-1]
-Az = A[-1]
 
 #odleglosc i azymuty miedzy dwoma wyznacoznymi punktami
 
-S,Aef,Afe = vincent(lam_aryt,fi_aryt,La,Phi)
-S = round(S,3)
+Se,Ax,Axy = vincent(lam_aryt,fi_aryt,lam_ad,fi_ad)
+Se = round(Se,3)
 
-Aef = np.rad2deg(Aef)
-Aef = konwersja(Aef)
-Afe = np.rad2deg(Afe)
-Afe = konwersja(Afe)
-print("Odleglosc między dwoma punktami srodkowymi:", S,"m")
-print("Azymuty dwoch punktow srodkowych:", Aef,",",Afe)
+Sed,Aed,Ade = vincent(lam_ad,fi_ad,lam2,fi2)
+Aed = np.rad2deg(Aed)
+Aed = konwersja(Aed)
 
+Sxd,Axd,Adx = vincent(lam_aryt,fi_aryt,lam2,fi2)
+Axd = np.rad2deg(Axd)
+Axd = konwersja(Axd)
+
+print("Odleglosc między punktem środkowym AD i punktem średniej szerokości:", Se,"m")
+
+print("Azymut między punktem E i D:", Aed)
+print("Azymut między punktem średniej szerokości a D:", Axd)
 #obliczanie Pola czworokąta
 e = m.sqrt(e2)
 fi1 = np.deg2rad(fi1)
@@ -168,3 +181,4 @@ P = abs(P)
 P = round(P,6)
 
 print("Pole prostokąta:",P,"m²")
+print("*Wspolrzedne punktu srodkowego CB:",konwersja(fi_cb),",",konwersja(lam_cb))
