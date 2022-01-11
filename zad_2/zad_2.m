@@ -47,19 +47,94 @@ xticks([0:24])
 figure(3)
 [x,y,z] = sphere(50); 
 z(z<0) = 0;
-S = surf(x,y,z); 
+S = surf(x,y,z,'facecolor', '#26f3f7','edgealpha', 0); 
 S.EdgeColor = 'blue';
 S.FaceAlpha = 0.4;
 light;
 lighting gouraud;
 axis equal;
 hold on 
-scatter3(xw,yw,zw, 'r','filled');
+scatter3(xw,yw,zw, 'yellow','*');
 title('Pozorna wędrówka gwiazdy Sadalsuud dla Warszawy 24.01.2001')
 xlabel('x');
 ylabel('y');
 zlabel('z');
 
+%dla Buenos Aires%
+[xb,yb,zb,wysb,azymutb] = oblicz(fi_b,lambda_b,alfa,delta);
+
+%wykres wysokości od czasu
+figure(4)
+plot(godz,wysb)
+grid on
+title('Wykres zależności wysokości od czasu dla Buenos Aires ')
+xlabel('czas [h]');
+ylabel('Wysokość gwiazdy nad horyzontem [°]');
+xticks([0:24])
+
+%wykres azymutu od czasu 
+figure(5)
+plot(godz,azymutb)
+grid on
+title('Wykres zależności azymutu od czasu dla Buenos Aires')
+xlabel('czas [h]');
+ylabel('azymut [°]');
+xticks([0:24])
+
+%rysowanie sfery
+figure(6)
+[x,y,z] = sphere(50); 
+z(z<0) = 0;
+S = mesh(x,y,z,'facecolor', '#26f3f7','edgealpha', 0); 
+S.EdgeColor = 'blue';
+S.FaceAlpha = 0.4;
+axis equal;
+light;
+lighting gouraud;
+hold on 
+scatter3(xb,yb,zb,'yellow','*');
+title('Pozorna wędrówka gwiazdy Sadalsuud dla Buenos Aires 24.01.2001');
+xlabel('x');
+ylabel('y');
+zlabel('z');
+
+%dla Libreville%
+[xl,yl,zl,wysl,azymutl] = oblicz(fi_l,lambda_l,alfa,delta);
+
+%wykres wysokości od czasu
+figure(7)
+plot(godz,wysl)
+grid on
+title('Wykres zależności wysokości od czasu dla Libreville ')
+xlabel('czas [h]');
+ylabel('Wysokość gwiazdy nad horyzontem [°]');
+xticks([0:24])
+
+%wykres azymutu od czasu 
+figure(8)
+plot(godz,azymutl)
+grid on
+title('Wykres zależności azymutu od czasu dla Libreville')
+xlabel('czas [h]');
+ylabel('azymut [°]');
+xticks([0:24])
+
+%rysowanie sfery
+figure(9)
+[x,y,z] = sphere(50); 
+z(z<0) = 0;
+S = mesh(x,y,z,'facecolor', '#26f3f7','edgealpha', 0); 
+S.EdgeColor = 'blue';
+S.FaceAlpha = 0.4;
+axis equal;
+light;
+lighting gouraud;
+hold on 
+scatter3(xl,yl,zl,'yellow','*');
+title('Pozorna wędrówka gwiazdy Sadalsuud dla Libreville 24.01.2001')
+xlabel('x');
+ylabel('y');
+zlabel('z');
 
 
 %funkcja na obliczanie wspolrzednych horyzontalnych
@@ -67,9 +142,7 @@ function [x,y,z,wys,azymut] = oblicz(fi,lam,alfa,delta)
     for i = 1:25
         hour(i) = katgodz(2001,01,24,i-1,lam,alfa);
         zenit(i) = acosd(sind(fi)*sind(delta)+cosd(fi)*cosd(delta)*cosd(hour(i)));
-        a =(-cosd(delta)*sind(hour(i)));
-        b =(cosd(fi)*sind(delta)-sind(fi)*cosd(delta)*cosd(hour(i)));
-        azymut(i) = atand(a/b)
+        azymut(i) = Az(fi,delta,hour(i));
     
         wys(i) = 90 - zenit(i);
     end
@@ -80,6 +153,21 @@ function [x,y,z,wys,azymut] = oblicz(fi,lam,alfa,delta)
     end
 end
 
+
+%obliczenie azymutu
+function A = Az(fi,delta,t)
+a =(-cosd(delta)*sind(t));
+b =(cosd(fi)*sind(delta)-sind(fi)*cosd(delta)*cosd(t));
+    if (a > 0) && (b > 0)
+        A=atand(a/b);
+    elseif (a > 0) && (b < 0)
+        A=atand(a / b)+ 180;
+    elseif (a < 0) && (b < 0)
+        A=atand(a / b)+ 180;
+    elseif (a < 0) && (b > 0)
+        A=atand(a / b)+ 360;
+    end
+end
 
 %przeliczenie daty na kalendarz juliański 
 function jd = julday(y,m,d) 
