@@ -1,6 +1,7 @@
 import math as m
 #przeliczanie phi i lambda na x y G-K
 
+
 a=6378137
 e2=0.00669437999013
 
@@ -10,12 +11,18 @@ A0= 1-(e2/4) - ((3*(e2)**2)/64)-((5*(e2)**3)/256)
 A2=(3/8)*((e2+((e2**2)/4)+((15*(e2)**3))/128))
 A4=(15/256)*(e2**2+((3*((e2)**3))/4))
 A6=(35*((e2)**3))/3072
-# A = lam1,fi2 B = lam2,fi2
-#C = lam1,fi1 D = lam2,fi1
+# A = lam1,fi2 C = lam2,fi2
+#B = lam1,fi1 D = lam2,fi1
 lam1 = 20.75
 fi1 = 50.25
 lam2 = 21.25
 fi2 = 50
+#punkt sredniej szerokosci
+fi_S = 50.125
+lam_S = 21
+#punkt srodkowy
+fi_E = 50.12527044899897
+lam_E = 21.00065108883653
 
 
 def U1992(fi,lam):
@@ -23,7 +30,7 @@ def U1992(fi,lam):
         m.radians(6 * fi)))
     fi = m.radians(fi)
     t = m.tan(fi)
-    ni2 = (e2b) * ((m.cos(fi)) ** 2)
+    ni2 = e2b * ((m.cos(fi)) ** 2)
     L0 = 19 * m.pi / 180  # w radianach
     lam = m.radians(lam)
     l = lam - L0
@@ -39,50 +46,37 @@ def U1992(fi,lam):
     X1992 = m01992 * xgk - 5300000
     Y1992 = m01992 * ygk + 500000
 
-    B = obliczB(xgk,m0)
-    fi2 = B - t/2 * (((ygk/m0*N)**2) * (1 + ni2) - 1/12 * ((ygk/m0*N)**4) * (5 + 3*(t**2) + 6*ni2 -
-        6*ni2*(t**2) - 3*(ni2**2) - 9*(t**2)*(ni2**2)) + 1/360 * ())
-
-
-
-
-
-
-
-
-
-
-
-
-    #X1992 = round(X1992,3)
-    #Y1992 = round(Y1992,3)
+    X1992 = round(X1992,3)
+    Y1992 = round(Y1992,3)
+    xgk = round(xgk,3)
+    ygk = round(ygk, 3)
     return X1992,Y1992,xgk,ygk
 
-def obliczB(x,m0):
-    B = x / (a * A0 * m0)
+
+def gk2filam(x,y):
+    B = x / (a * A0)
     while True:
-        B1 = x / (a * A0 * m0) + A2 / A0 * m.sin(2 * B) - A4 / A0 * m.sin(4 * B) + A6 / A0 * m.sin(6 * B)
+        sigma = a * (A0 * B - A2 * m.sin(2 * B) + A4 * m.sin(4 * B) - A6 * m.sin(6 * B))
+        B1 = B + (x - sigma) / a * A0
         if abs(m.degrees(B1 - B)) * 3600 < 0.000001:
-            return B1
+            break
         else:
             B = B1
 
-def gk2fl (xgk,ygk,m0):
-    B = obliczB(m0)
-    fi = B -
+    t = m.tan(B1)
+    ni2 = e2b * (m.cos(B1) ** 2)
+    N = a / m.sqrt(1 - e2 * m.sin(B1) ** 2)
+    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(m.radians(B1)) ** 2) ** 3)
+    L0 = 19 * m.pi / 180  # w radianach
 
+    fi = B1 - (y ** 2 * t) / (2 * M * N) * (1 - (y ** 2) / (12 * N ** 2) *
+        (5+3*t**2+ni2-9*ni2*t**2-4*ni2**2)+(y**4)/(360*N**4) * (61 + 90*t**2 + 45*t**4))
+    lam = L0 + y/(N*m.cos(B1)) * (1 - y**2/(6*N**2) * (1+2*t**2+ni2) +
+        y**4/(120*N**4) * (5+28*t**2+24*t**4+6*ni2+8*ni2*t**2))
 
-# Ax1992,Ay1992 = U1992(fi2,lam1)
-# Bx1992,By1992 = U1992(fi2,lam2)
-# Cx1992,Cy1992 = U1992(fi1,lam1)
-# Dx1992,Dy1992 = U1992(fi1,lam2)
-
-# print("Wspołrzędne pkt A w 1992:",Ax1992,Ay1992)
-# print("Wspołrzędne pkt B w 1992:",Bx1992,By1992)
-# print("Wspołrzędne pkt C w 1992:",Cx1992,Cy1992)
-# print("Wspołrzędne pkt D w 1992:",Dx1992,Dy1992,'\n')
-
-
+    fi = m.degrees(fi)
+    lam = m.degrees(lam)
+    return fi, lam
 
 def strefa(lam):
     if lam >= 22.5:
@@ -115,25 +109,40 @@ def U2000(fi,lam):
     m02000 = 0.999923
     X2000 = m02000*xgk
     Y2000 = m02000*ygk+1000000*nr+500000
-    #X2000 = round(X2000,3)
-    #Y2000 = round(Y2000,3)
-    return X2000,Y2000,xgk,ygk
+    X2000 = round(X2000,3)
+    Y2000 = round(Y2000,3)
+    return X2000,Y2000
 
-# Ax2000,Ay2000,nrA = U2000(fi2,lam1)
-# Bx2000,By2000,nrB = U2000(fi2,lam2)
-# Cx2000,Cy2000,nrC = U2000(fi1,lam1)
-# Dx2000,Dy2000,nrD = U2000(fi2,lam2)
-lolx1992,loly1992,xgk1992,ygk1992 = U1992(51.70102972777778,18.175462347222222)
-lolx2000,loly2000,xgk2000,ygk2000 = U2000(51.70102972777778,18.175462347222222)
+# A = lam1,fi2 C = lam2,fi2
+#B = lam1,fi1 D = lam2,fi1
+
+Ax1992,Ay1992,Axgk,Aygk = U1992(fi2,lam1)
+Bx1992,By1992,Bxgk,Bygk = U1992(fi1,lam1)
+Cx1992,Cy1992,Cxgk,Cygk = U1992(fi2,lam2)
+Dx1992,Dy1992,Dxgk,Dygk = U1992(fi1,lam2)
+
+print("Wspołrzędne pkt A w G-K:",Axgk,Aygk)
+print("Wspołrzędne pkt B w G-K:",Bxgk,Bygk)
+print("Wspołrzędne pkt C w G-K:",Cxgk,Cygk)
+print("Wspołrzędne pkt D w G-K:",Dxgk,Dygk,'\n')
+
+print("Wspołrzędne pkt A w 1992:",Ax1992,Ay1992)
+print("Wspołrzędne pkt B w 1992:",Bx1992,By1992)
+print("Wspołrzędne pkt C w 1992:",Cx1992,Cy1992)
+print("Wspołrzędne pkt D w 1992:",Dx1992,Dy1992,'\n')
+
+Ax2000,Ay2000 = U2000(fi2,lam1)
+Bx2000,By2000 = U2000(fi1,lam1)
+Cx2000,Cy2000 = U2000(fi2,lam2)
+Dx2000,Dy2000 = U2000(fi2,lam2)
+
+print("Wspołrzędne pkt A w 2000:",Ax2000,Ay2000)
+print("Wspołrzędne pkt B w 2000:",Bx2000,By2000)
+print("Wspołrzędne pkt C w 2000:",Cx2000,Cy2000)
+print("Wspołrzędne pkt D w 2000:",Dx2000,Dy2000)
 
 
-# print("Wspołrzędne pkt A w 2000:",Ax2000,Ay2000,nrA)
-# print("Wspołrzędne pkt B w 2000:",Bx2000,By2000,nrB)
-# print("Wspołrzędne pkt C w 2000:",Cx2000,Cy2000,nrC)
-# print("Wspołrzędne pkt D w 2000:",Dx2000,Dy2000,nrD)
+#lolfi92,lollam92 = gk2filam(xgk1992,ygk1992)
 
-print("Wspołrzędne pkt lol w gk92:",xgk1992,ygk1992)
-print("Wspołrzędne pkt lol w gk20:",xgk2000,ygk2000)
 
-print("Wspołrzędne pkt lol w 2000:",lolx2000,loly2000)
-print("Wspołrzędne pkt lol w 1992:",lolx1992,loly1992)
+
