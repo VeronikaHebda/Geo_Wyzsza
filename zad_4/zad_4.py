@@ -51,10 +51,13 @@ def U1992(fi,lam):
     Y1992 = round(Y1992,3)
 
     R = m.sqrt(M*N)
-    ms = 1 + (ygk**2)/(2*(R**2)) + ygk**4/(24*(R**4))
-    m1992 = ms * m01992
+    mgk = 1 + (ygk**2)/(2*(R**2)) + ygk**4/(24*(R**4))
+    m1992 = mgk * m01992
 
-    return X1992,Y1992,round(xgk,3),round(ygk,3),round(ms,6),round(m1992,6)
+    mgk_2 = mgk**2
+    m92_2 = mgk_2 * 0.9993**2
+
+    return X1992,Y1992,round(xgk,3),round(ygk,3),round(mgk,6),round(m1992,6),round(mgk_2,6),round(m92_2,6)
 
 
 def gk2filam(x,y):
@@ -118,19 +121,22 @@ def U2000(fi,lam):
     Y2000 = round(Y2000,3)
 
     R = m.sqrt(M * N)
-    ms = 1 + (ygk ** 2) / (2 * (R ** 2)) + ygk ** 4 / (24 * (R ** 4))
-    m2000 = ms * m02000
-    return X2000,Y2000,round(m2000,6)
+    mgk = 1 + (ygk ** 2) / (2 * (R ** 2)) + ygk ** 4 / (24 * (R ** 4))
+    m2000 = mgk * m02000
+
+    mgk_2 = mgk**2
+    m2000_2 = mgk_2 * 0.999923**2
+    return X2000,Y2000,round(m2000,6),round(m2000_2,6)
 
 #A = lam1,fi1 C = lam2,fi1
 #B = lam1,fi2 D = lam2,fi2
 
-Ax1992,Ay1992,Axgk,Aygk,Amgk,Am1992 = U1992(fi1,lam1)
-Bx1992,By1992,Bxgk,Bygk,Bmgk,Bm1992 = U1992(fi2,lam1)
-Cx1992,Cy1992,Cxgk,Cygk,Cmgk,Cm1992 = U1992(fi1,lam2)
-Dx1992,Dy1992,Dxgk,Dygk,Dmgk,Dm1992 = U1992(fi2,lam2)
-Ex1992,Ey1992,Exgk,Eygk,Emgk,Em1992 = U1992(fi_E,lam_E)
-Sx1992,Sy1992,Sxgk,Sygk,Smgk,Sm1992 = U1992(fi_S,lam_S)
+Ax1992,Ay1992,Axgk,Aygk,Amgk,Am1992,Amgk_2,Am92_2 = U1992(fi1,lam1)
+Bx1992,By1992,Bxgk,Bygk,Bmgk,Bm1992,Bmgk_2,Bm92_2 = U1992(fi2,lam1)
+Cx1992,Cy1992,Cxgk,Cygk,Cmgk,Cm1992,Cmgk_2,Cm92_2 = U1992(fi1,lam2)
+Dx1992,Dy1992,Dxgk,Dygk,Dmgk,Dm1992,Dmgk_2,Dm92_2 = U1992(fi2,lam2)
+Ex1992,Ey1992,Exgk,Eygk,Emgk,Em1992,Emgk_2,Em92_2 = U1992(fi_E,lam_E)
+Sx1992,Sy1992,Sxgk,Sygk,Smgk,Sm1992,Smgk_2,Sm92_2 = U1992(fi_S,lam_S)
 
 print("Wspołrzędne pkt A w G-K:",Axgk,Aygk)
 print("Wspołrzędne pkt B w G-K:",Bxgk,Bygk)
@@ -148,12 +154,12 @@ print("Wspołrzędne pkt S w 1992:",Sx1992,Sy1992,'\n')
 
 #A = lam1,fi1 C = lam2,fi1
 #B = lam1,fi2 D = lam2,fi2
-Ax2000,Ay2000,Am2000 = U2000(fi1,lam1)
-Bx2000,By2000,Bm2000 = U2000(fi2,lam1)
-Cx2000,Cy2000,Cm2000 = U2000(fi1,lam2)
-Dx2000,Dy2000,Dm2000 = U2000(fi2,lam2)
-Ex2000,Ey2000,Em2000 = U2000(fi_E,lam_E)
-Sx2000,Sy2000,Sm2000 = U2000(fi_S,lam_S)
+Ax2000,Ay2000,Am2000,Am2000_2 = U2000(fi1,lam1)
+Bx2000,By2000,Bm2000,Bm2000_2 = U2000(fi2,lam1)
+Cx2000,Cy2000,Cm2000,Cm2000_2 = U2000(fi1,lam2)
+Dx2000,Dy2000,Dm2000,Dm2000_2 = U2000(fi2,lam2)
+Ex2000,Ey2000,Em2000,Em2000_2 = U2000(fi_E,lam_E)
+Sx2000,Sy2000,Sm2000,Sm2000_2 = U2000(fi_S,lam_S)
 
 print("Wspołrzędne pkt A w 2000:",Ax2000,Ay2000)
 print("Wspołrzędne pkt B w 2000:",Bx2000,By2000)
@@ -196,4 +202,25 @@ print("Kgk(1km):",Kgk)
 print("M92:",m92)
 print("K92(1km):",K92)
 print("m2000:",m2000)
-print("K2000(1km):",K2000)
+print("K2000(1km):",K2000,'\n')
+
+mgk_2 = [Amgk_2,Bmgk_2,Cmgk_2,Dmgk_2,Emgk_2,Smgk_2]
+Kgk_2 = []
+m92_2 = [Am92_2,Am92_2,Am92_2,Am92_2,Am92_2,Am92_2]
+K92_2 = []
+m2000_2 = [Am2000_2,Bm2000_2,Cm2000_2,Dm2000_2,Em2000_2,Sm2000_2]
+K2000_2 = []
+for i in range(0,6):
+    Kgk2 = (1 - mgk_2[i]) * 1000
+    Kgk_2.append(round(Kgk2, 2))
+    K922 = (1 - m92_2[i]) * 1000
+    K92_2.append(round(K922, 2))
+    K202 = (1 - m2000_2[i]) * 1000
+    K2000_2.append(round(K202, 2))
+
+print("Mgk:",mgk_2)
+print("Kgk(1km):",Kgk_2)
+print("M92:",m92_2)
+print("K92(1km):",K92_2)
+print("m2000:",m2000_2)
+print("K2000(1km):",K2000_2,'\n')
