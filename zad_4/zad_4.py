@@ -35,6 +35,7 @@ def U1992(fi,lam):
     lam = m.radians(lam)
     l = lam - L0
     N = a / (m.sqrt(1 - e2 * (m.sin(fi)) ** 2))
+    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(m.radians(fi)) ** 2) ** 3)
 
     xgk = sigma + ((l ** 2) / 2) * N * m.sin(fi) * m.cos(fi) * (
                 1 + (l ** 2 / 12) * (m.cos(fi) ** 2) * (5 - t ** 2 + 9 * ni2 + 4 * (ni2 ** 2)) + ((l ** 4) / 360) * (
@@ -49,7 +50,11 @@ def U1992(fi,lam):
     X1992 = round(X1992,3)
     Y1992 = round(Y1992,3)
 
-    return X1992,Y1992,round(xgk,3),round(ygk,3)
+    R = m.sqrt(M*N)
+    ms = 1 + (ygk**2)/(2*(R**2)) + ygk**4/(24*(R**4))
+    m1992 = ms * m01992
+
+    return X1992,Y1992,round(xgk,3),round(ygk,3),round(ms,6),round(m1992,6)
 
 
 def gk2filam(x,y):
@@ -98,6 +103,7 @@ def U2000(fi,lam):
     lam = m.radians(lam)
     l = lam - L0
     N = a / (m.sqrt(1 - e2 * (m.sin(fi)) ** 2))
+    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(m.radians(fi)) ** 2) ** 3)
 
     xgk = sigma + ((l ** 2) / 2) * N * m.sin(fi) * m.cos(fi) * (
                 1 + (l ** 2 / 12) * (m.cos(fi) ** 2) * (5 - t ** 2 + 9 * ni2 + 4 * (ni2 ** 2)) + ((l ** 4) / 360) * (
@@ -111,17 +117,20 @@ def U2000(fi,lam):
     X2000 = round(X2000,3)
     Y2000 = round(Y2000,3)
 
-    return X2000,Y2000
+    R = m.sqrt(M * N)
+    ms = 1 + (ygk ** 2) / (2 * (R ** 2)) + ygk ** 4 / (24 * (R ** 4))
+    m2000 = ms * m02000
+    return X2000,Y2000,round(m2000,6)
 
 #A = lam1,fi1 C = lam2,fi1
 #B = lam1,fi2 D = lam2,fi2
 
-Ax1992,Ay1992,Axgk,Aygk = U1992(fi1,lam1)
-Bx1992,By1992,Bxgk,Bygk = U1992(fi2,lam1)
-Cx1992,Cy1992,Cxgk,Cygk = U1992(fi1,lam2)
-Dx1992,Dy1992,Dxgk,Dygk = U1992(fi2,lam2)
-Ex1992,Ey1992,Exgk,Eygk = U1992(fi_E,lam_E)
-Sx1992,Sy1992,Sxgk,Sygk = U1992(fi_S,lam_S)
+Ax1992,Ay1992,Axgk,Aygk,Amgk,Am1992 = U1992(fi1,lam1)
+Bx1992,By1992,Bxgk,Bygk,Bmgk,Bm1992 = U1992(fi2,lam1)
+Cx1992,Cy1992,Cxgk,Cygk,Cmgk,Cm1992 = U1992(fi1,lam2)
+Dx1992,Dy1992,Dxgk,Dygk,Dmgk,Dm1992 = U1992(fi2,lam2)
+Ex1992,Ey1992,Exgk,Eygk,Emgk,Em1992 = U1992(fi_E,lam_E)
+Sx1992,Sy1992,Sxgk,Sygk,Smgk,Sm1992 = U1992(fi_S,lam_S)
 
 print("Wspołrzędne pkt A w G-K:",Axgk,Aygk)
 print("Wspołrzędne pkt B w G-K:",Bxgk,Bygk)
@@ -139,12 +148,12 @@ print("Wspołrzędne pkt S w 1992:",Sx1992,Sy1992,'\n')
 
 #A = lam1,fi1 C = lam2,fi1
 #B = lam1,fi2 D = lam2,fi2
-Ax2000,Ay2000 = U2000(fi1,lam1)
-Bx2000,By2000 = U2000(fi2,lam1)
-Cx2000,Cy2000 = U2000(fi1,lam2)
-Dx2000,Dy2000 = U2000(fi2,lam2)
-Ex2000,Ey2000 = U2000(fi_E,lam_E)
-Sx2000,Sy2000 = U2000(fi_S,lam_S)
+Ax2000,Ay2000,Am2000 = U2000(fi1,lam1)
+Bx2000,By2000,Bm2000 = U2000(fi2,lam1)
+Cx2000,Cy2000,Cm2000 = U2000(fi1,lam2)
+Dx2000,Dy2000,Dm2000 = U2000(fi2,lam2)
+Ex2000,Ey2000,Em2000 = U2000(fi_E,lam_E)
+Sx2000,Sy2000,Sm2000 = U2000(fi_S,lam_S)
 
 print("Wspołrzędne pkt A w 2000:",Ax2000,Ay2000)
 print("Wspołrzędne pkt B w 2000:",Bx2000,By2000)
@@ -165,4 +174,26 @@ print("Pole G-K:",PGK.area)
 P2000 = Polygon([(Ax2000,Ay2000),(Bx2000,By2000),(Dx2000,Dy2000),(Cx2000,Cy2000),(Ax2000,Ay2000)])
 print("Pole 2000:",P2000.area)
 P1992 = Polygon([(Ax1992,Ay1992),(Bx1992,By1992),(Dx1992,Dy1992),(Cx1992,Cy1992),(Ax1992,Ay1992)])
-print("Pole 1992:",P1992.area)
+print("Pole 1992:",P1992.area,'\n')
+
+#elementarne skali długości
+mgk = [Amgk,Bmgk,Cmgk,Dmgk,Emgk,Smgk]
+Kgk = []
+m92 = [Am1992,Bm1992,Cm1992,Dm1992,Em1992,Sm1992]
+K92 = []
+m2000 = [Am2000,Bm2000,Cm2000,Dm2000,Em2000,Sm2000]
+K2000 = []
+for i in range(0,6):
+    K_gk = (1 - mgk[i]) * 1000
+    Kgk.append(round(K_gk,2))
+    K_92 = (1 - m92[i]) * 1000
+    K92.append(round(K_92,2))
+    K_20 = (1 - m2000[i]) * 1000
+    K2000.append(round(K_20,2))
+
+print("Mgk:",mgk)
+print("Kgk(1km):",Kgk)
+print("M92:",m92)
+print("K92(1km):",K92)
+print("m2000:",m2000)
+print("K2000(1km):",K2000)
