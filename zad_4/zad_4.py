@@ -35,7 +35,6 @@ def U1992(fi,lam):
     lam = m.radians(lam)
     l = lam - L0
     N = a / (m.sqrt(1 - e2 * (m.sin(fi)) ** 2))
-    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(m.radians(fi)) ** 2) ** 3)
 
     xgk = sigma + ((l ** 2) / 2) * N * m.sin(fi) * m.cos(fi) * (
                 1 + (l ** 2 / 12) * (m.cos(fi) ** 2) * (5 - t ** 2 + 9 * ni2 + 4 * (ni2 ** 2)) + ((l ** 4) / 360) * (
@@ -47,8 +46,13 @@ def U1992(fi,lam):
     X1992 = m01992 * xgk - 5300000
     Y1992 = m01992 * ygk + 500000
 
-    X1992 = round(X1992,3)
-    Y1992 = round(Y1992,3)
+    X1992 = round(X1992, 3)
+    Y1992 = round(Y1992, 3)
+
+    fi2,lam2 = gk2filam(xgk,ygk)
+
+    N = a / (m.sqrt(1 - e2 * (m.sin(fi2)) ** 2))
+    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(fi2) ** 2) ** 3)
 
     R = m.sqrt(M*N)
     mgk = 1 + (ygk**2)/(2*(R**2)) + ygk**4/(24*(R**4))
@@ -61,6 +65,7 @@ def U1992(fi,lam):
 
 
 def gk2filam(x,y):
+
     B = x / (a * A0)
     while True:
         sigma = a * (A0 * B - A2 * m.sin(2 * B) + A4 * m.sin(4 * B) - A6 * m.sin(6 * B))
@@ -81,8 +86,8 @@ def gk2filam(x,y):
     lam = L0 + y/(N*m.cos(B1)) * (1 - y**2/(6*N**2) * (1+2*t**2+ni2) +
         y**4/(120*N**4) * (5+28*t**2+24*t**4+6*ni2+8*ni2*t**2))
 
-    fi = m.degrees(fi)
-    lam = m.degrees(lam)
+    #fi = m.degrees(fi)
+    #lam = m.degrees(lam)
     return fi, lam
 
 def strefa(lam):
@@ -106,7 +111,6 @@ def U2000(fi,lam):
     lam = m.radians(lam)
     l = lam - L0
     N = a / (m.sqrt(1 - e2 * (m.sin(fi)) ** 2))
-    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(m.radians(fi)) ** 2) ** 3)
 
     xgk = sigma + ((l ** 2) / 2) * N * m.sin(fi) * m.cos(fi) * (
                 1 + (l ** 2 / 12) * (m.cos(fi) ** 2) * (5 - t ** 2 + 9 * ni2 + 4 * (ni2 ** 2)) + ((l ** 4) / 360) * (
@@ -120,7 +124,12 @@ def U2000(fi,lam):
     X2000 = round(X2000,3)
     Y2000 = round(Y2000,3)
 
+
+    fi2,lam2 = gk2filam(xgk,ygk)
+    N = a / (m.sqrt(1 - e2 * (m.sin(fi2)) ** 2))
+    M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(m.radians(fi2)) ** 2) ** 3)
     R = m.sqrt(M * N)
+
     mgk = 1 + (ygk ** 2) / (2 * (R ** 2)) + ygk ** 4 / (24 * (R ** 4))
     m2000 = mgk * m02000
 
@@ -138,19 +147,19 @@ Dx1992,Dy1992,Dxgk,Dygk,Dmgk,Dm1992,Dmgk_2,Dm92_2 = U1992(fi2,lam2)
 Ex1992,Ey1992,Exgk,Eygk,Emgk,Em1992,Emgk_2,Em92_2 = U1992(fi_E,lam_E)
 Sx1992,Sy1992,Sxgk,Sygk,Smgk,Sm1992,Smgk_2,Sm92_2 = U1992(fi_S,lam_S)
 
-print("Wspołrzędne pkt A w G-K:",Axgk,Aygk)
-print("Wspołrzędne pkt B w G-K:",Bxgk,Bygk)
-print("Wspołrzędne pkt C w G-K:",Cxgk,Cygk)
-print("Wspołrzędne pkt D w G-K:",Dxgk,Dygk)
-print("Wspołrzędne pkt E w G-K:",Exgk,Eygk)
-print("Wspołrzędne pkt S w G-K:",Sxgk,Sygk,'\n')
+print("Wspołrzędne pkt A w G-K:","{:.3f}".format(Axgk),"m","{:.3f}".format(Aygk),"m")
+print("Wspołrzędne pkt B w G-K:","{:.3f}".format(Bxgk),"m","{:.3f}".format(Bygk),"m")
+print("Wspołrzędne pkt C w G-K:","{:.3f}".format(Cxgk),"m","{:.3f}".format(Cygk),"m")
+print("Wspołrzędne pkt D w G-K:","{:.3f}".format(Dxgk),"m","{:.3f}".format(Dygk),"m")
+print("Wspołrzędne pkt E w G-K:","{:.3f}".format(Exgk),"m","{:.3f}".format(Eygk),"m")
+print("Wspołrzędne pkt S w G-K:","{:.3f}".format(Sxgk),"m","{:.3f}".format(Sygk),"m",'\n')
 
-print("Wspołrzędne pkt A w 1992:",Ax1992,Ay1992)
-print("Wspołrzędne pkt B w 1992:",Bx1992,By1992)
-print("Wspołrzędne pkt C w 1992:",Cx1992,Cy1992)
-print("Wspołrzędne pkt D w 1992:",Dx1992,Dy1992)
-print("Wspołrzędne pkt E w 1992:",Ex1992,Ey1992)
-print("Wspołrzędne pkt S w 1992:",Sx1992,Sy1992,'\n')
+print("Wspołrzędne pkt A w 1992:","{:.3f}".format(Ax1992),"m","{:.3f}".format(Ay1992),"m")
+print("Wspołrzędne pkt B w 1992:","{:.3f}".format(Bx1992),"m","{:.3f}".format(By1992),"m")
+print("Wspołrzędne pkt C w 1992:","{:.3f}".format(Cx1992),"m","{:.3f}".format(Cy1992),"m")
+print("Wspołrzędne pkt D w 1992:","{:.3f}".format(Dx1992),"m","{:.3f}".format(Dy1992),"m")
+print("Wspołrzędne pkt E w 1992:","{:.3f}".format(Ex1992),"m","{:.3f}".format(Ey1992),"m")
+print("Wspołrzędne pkt S w 1992:","{:.3f}".format(Sx1992),"m","{:.3f}".format(Sy1992),"m",'\n')
 
 #A = lam1,fi1 C = lam2,fi1
 #B = lam1,fi2 D = lam2,fi2
@@ -161,12 +170,12 @@ Dx2000,Dy2000,Dm2000,Dm2000_2 = U2000(fi2,lam2)
 Ex2000,Ey2000,Em2000,Em2000_2 = U2000(fi_E,lam_E)
 Sx2000,Sy2000,Sm2000,Sm2000_2 = U2000(fi_S,lam_S)
 
-print("Wspołrzędne pkt A w 2000:",Ax2000,Ay2000)
-print("Wspołrzędne pkt B w 2000:",Bx2000,By2000)
-print("Wspołrzędne pkt C w 2000:",Cx2000,Cy2000)
-print("Wspołrzędne pkt D w 2000:",Dx2000,Dy2000)
-print("Wspołrzędne pkt E w 2000:",Ex2000,Ey2000)
-print("Wspołrzędne pkt S w 2000:",Sx2000,Sy2000,'\n')
+print("Wspołrzędne pkt A w 2000:","{:.3f}".format(Ax2000),"m","{:.3f}".format(Ay2000),"m")
+print("Wspołrzędne pkt B w 2000:","{:.3f}".format(Bx2000),"m","{:.3f}".format(By2000),"m")
+print("Wspołrzędne pkt C w 2000:","{:.3f}".format(Cx2000),"m","{:.3f}".format(Cy2000),"m")
+print("Wspołrzędne pkt D w 2000:","{:.3f}".format(Dx2000),"m","{:.3f}".format(Dy2000),"m")
+print("Wspołrzędne pkt E w 2000:","{:.3f}".format(Ex2000),"m","{:.3f}".format(Ey2000),"m")
+print("Wspołrzędne pkt S w 2000:","{:.3f}".format(Sx2000),"m","{:.3f}".format(Sy2000),"m",'\n')
 
 #Axodwrocone,Ayodwrocone = gk2filam(Axgk,Aygk)
 #Bxodwrocone,Byodwrocone = gk2filam(Bxgk,Bygk)
@@ -174,13 +183,13 @@ print("Wspołrzędne pkt S w 2000:",Sx2000,Sy2000,'\n')
 
 #obliczanie pól powierzchni
 Pelipsoidalne = 994265196.074311
-print("Pole elipsoidalne:", Pelipsoidalne)
+print("Pole elipsoidalne:", Pelipsoidalne,"m²")
 PGK = Polygon([(Axgk,Aygk),(Bxgk,Bygk),(Dxgk,Dygk),(Cxgk,Cygk),(Axgk,Aygk)])
-print("Pole G-K:",PGK.area)
+print("Pole G-K:",PGK.area,"m²")
 P2000 = Polygon([(Ax2000,Ay2000),(Bx2000,By2000),(Dx2000,Dy2000),(Cx2000,Cy2000),(Ax2000,Ay2000)])
-print("Pole 2000:",P2000.area)
+print("Pole 2000:",P2000.area,"m²")
 P1992 = Polygon([(Ax1992,Ay1992),(Bx1992,By1992),(Dx1992,Dy1992),(Cx1992,Cy1992),(Ax1992,Ay1992)])
-print("Pole 1992:",P1992.area,'\n')
+print("Pole 1992:",P1992.area,"m²",'\n')
 
 #elementarne skali długości
 mgk = [Amgk,Bmgk,Cmgk,Dmgk,Emgk,Smgk]
@@ -218,9 +227,9 @@ for i in range(0,6):
     K202 = (1 - m2000_2[i]) * 1000
     K2000_2.append(round(K202, 2))
 
-print("Mgk:",mgk_2)
-print("Kgk(1km):",Kgk_2)
-print("M92:",m92_2)
-print("K92(1km):",K92_2)
-print("m2000:",m2000_2)
-print("K2000(1km):",K2000_2,'\n')
+print("Mgk^2:",mgk_2)
+print("Kgk^2(1km):",Kgk_2)
+print("M92^2:",m92_2)
+print("K92^2(1km):",K92_2)
+print("m2000^2:",m2000_2)
+print("K2000^2(1km):",K2000_2,'\n')
