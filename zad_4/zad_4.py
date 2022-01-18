@@ -53,19 +53,19 @@ def U1992(fi,lam):
 
     N = a / (m.sqrt(1 - e2 * (m.sin(fi2)) ** 2))
     M = (a * (1 - e2)) / m.sqrt((1 - e2 * m.sin(fi2) ** 2) ** 3)
-
     R = m.sqrt(M*N)
+
     mgk = 1 + (ygk**2)/(2*(R**2)) + ygk**4/(24*(R**4))
     m1992 = mgk * m01992
 
     mgk_2 = mgk**2
     m92_2 = mgk_2 * 0.9993**2
 
-    return X1992,Y1992,round(xgk,3),round(ygk,3),round(mgk,6),round(m1992,6),round(mgk_2,6),round(m92_2,6)
+
+    return X1992,Y1992,round(xgk,3),round(ygk,3),round(mgk,6),round(m1992,6),mgk_2,m92_2
 
 
 def gk2filam(x,y):
-
     B = x / (a * A0)
     while True:
         sigma = a * (A0 * B - A2 * m.sin(2 * B) + A4 * m.sin(4 * B) - A6 * m.sin(6 * B))
@@ -86,8 +86,6 @@ def gk2filam(x,y):
     lam = L0 + y/(N*m.cos(B1)) * (1 - y**2/(6*N**2) * (1+2*t**2+ni2) +
         y**4/(120*N**4) * (5+28*t**2+24*t**4+6*ni2+8*ni2*t**2))
 
-    #fi = m.degrees(fi)
-    #lam = m.degrees(lam)
     return fi, lam
 
 def strefa(lam):
@@ -135,7 +133,7 @@ def U2000(fi,lam):
 
     mgk_2 = mgk**2
     m2000_2 = mgk_2 * 0.999923**2
-    return X2000,Y2000,round(m2000,6),round(m2000_2,6)
+    return X2000,Y2000,round(m2000,6),m2000_2
 
 #A = lam1,fi1 C = lam2,fi1
 #B = lam1,fi2 D = lam2,fi2
@@ -199,12 +197,12 @@ K92 = []
 m2000 = [Am2000,Bm2000,Cm2000,Dm2000,Em2000,Sm2000]
 K2000 = []
 for i in range(0,6):
-    K_gk = (1 - mgk[i]) * 1000
-    Kgk.append(round(K_gk,2))
-    K_92 = (1 - m92[i]) * 1000
-    K92.append(round(K_92,2))
-    K_20 = (1 - m2000[i]) * 1000
-    K2000.append(round(K_20,2))
+    K_gk = (mgk[i] - 1) * 1000
+    Kgk.append(round(K_gk,3))
+    K_92 = (m92[i] - 1) * 1000
+    K92.append(round(K_92,3))
+    K_20 = (m2000[i] - 1) * 1000
+    K2000.append(round(K_20,3))
 
 print("Mgk:",mgk)
 print("Kgk(1km):",Kgk)
@@ -215,17 +213,20 @@ print("K2000(1km):",K2000,'\n')
 
 mgk_2 = [Amgk_2,Bmgk_2,Cmgk_2,Dmgk_2,Emgk_2,Smgk_2]
 Kgk_2 = []
-m92_2 = [Am92_2,Am92_2,Am92_2,Am92_2,Am92_2,Am92_2]
+m92_2 = [Am92_2,Bm92_2,Cm92_2,Dm92_2,Em92_2,Sm92_2]
 K92_2 = []
 m2000_2 = [Am2000_2,Bm2000_2,Cm2000_2,Dm2000_2,Em2000_2,Sm2000_2]
 K2000_2 = []
 for i in range(0,6):
-    Kgk2 = (1 - mgk_2[i]) * 1000
-    Kgk_2.append(round(Kgk2, 2))
-    K922 = (1 - m92_2[i]) * 1000
-    K92_2.append(round(K922, 2))
-    K202 = (1 - m2000_2[i]) * 1000
-    K2000_2.append(round(K202, 2))
+    Kgk2 = (mgk_2[i] - 1) * 10000
+    Kgk_2.append("{:.3f}".format(Kgk2))
+    K922 = (m92_2[i] - 1) * 10000
+    K92_2.append("{:.3f}".format(K922))
+    K202 = (m2000_2[i] - 1) * 10000
+    K2000_2.append("{:.3f}".format(K202))
+    mgk_2[i] = round(mgk_2[i], 6)
+    m92_2[i] = round(m92_2[i], 6)
+    m2000_2[i] = round(m2000_2[i], 6)
 
 print("Mgk^2:",mgk_2)
 print("Kgk^2(1km):",Kgk_2)
