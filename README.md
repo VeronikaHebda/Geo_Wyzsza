@@ -1,15 +1,15 @@
 # higher surveing
-task_1__
-The exercise consisted in getting to know different coordinate systems and their conversion
-on the example of the obtained airport and airplane coordinates in a given time series.
-Data should have been:
-• convert to the spatial rectangular coordinate system (xyz) with respect to GRS80 ellipsoids.
-• determine the topocentric coordinates (neu) with respect to the aerodrome.
-• Convert coordinates (neu) into oblique distance, azimuths and zenith distance plane.
-• determine the moment when the plane disappears below the horizon in relation to the starting aerodrome.
-• present the results in graphs.
-Flight data DLH1350 from Frankfurt Airport (FRA) to the Airport Warsaw Chopin Airport (WAW) was selected, downloaded from flightaware.com.
-The MATLAB environment was used to perform the exercise 
+task_1  
+The exercise consisted in getting to know different coordinate systems and their conversion  
+on the example of the obtained airport and airplane coordinates in a given time series.  
+Data should have been:  
+• convert to the spatial rectangular coordinate system (xyz) with respect to GRS80 ellipsoids.  
+• determine the topocentric coordinates (neu) with respect to the aerodrome.  
+• Convert coordinates (neu) into oblique distance, azimuths and zenith distance plane.  
+• determine the moment when the plane disappears below the horizon in relation to the starting aerodrome.  
+• present the results in graphs.  
+Flight data DLH1350 from Frankfurt Airport (FRA) to the Airport Warsaw Chopin Airport (WAW) was selected, downloaded from flightaware.com.  
+The MATLAB environment was used to perform the exercise  
 
 /////////////////////////////////////////////////////
 task_2
