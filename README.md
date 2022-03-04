@@ -10,8 +10,7 @@ Data should have been:
 • present the results in graphs.  
 Flight data DLH1350 from Frankfurt Airport (FRA) to the Airport Warsaw Chopin Airport (WAW) was selected, downloaded from flightaware.com.  
 The MATLAB environment was used to perform the exercise  
-
-/////////////////////////////////////////////////////  
+ 
 task_2  
 The aim of the exercise was to select a star and analyze its motion in the sky during one day from  
 three positions on Earth: in the southern hemisphere, in the northern hemisphere, and around the equator.  
@@ -25,8 +24,7 @@ The MATLAB environment was used to perform the exercise.
 The star Sadalsuud, the brightest star in the Aquarius constellation, was selected for observation.  
 The date of observation was January 24, 2001, and three cities were selected as the places: Warsaw (hemisphere  
 northern), Buenos Aires (southern hemisphere) and Libreville (equatorial area).  
-  
-/////////////////////////////////////////////////////  
+   
 task_3  
 The aim of the exercise was to get acquainted with spherical trigonometry and to determine the data of four points on Earth:  
 • the midpoint between two points using Vincent's and Kivioj's algorithm.  
@@ -35,7 +33,6 @@ The aim of the exercise was to get acquainted with spherical trigonometry and to
 • The area of the quadrilateral formed by the points.  
 The Python programming language version 3.10 in the PyCharm Community Edition environment was used to perform the exercise.  
   
-/////////////////////////////////////////////////////
 task_4  
 The aim of the exercise was to :  
 • recalculate geodetic coordinates according to the GRS80 ellipsoid of six points per coordinate in three different systems:  
@@ -48,7 +45,6 @@ Additionally, the area of the rectangle had to be calculated from four points,
 calculation of the scale of surface areas and distortions per 1ha.  
 The Python programming language version 3.10 in the PyCharm Community Edition environment was used to perform the exercise.  
   
-/////////////////////////////////////////////////////  
 task_5  
 The exercise consisted in transforming the coordinates 𝜑 𝜆 of six points from the GRS80 ellipsoid into  
 𝜑 𝜆 coordinates of the Krasowski ellipsoid using the Hirvonen algorithm and the Bursa-Wolf transformation.  
