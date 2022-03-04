@@ -36,9 +36,9 @@ The Python programming language version 3.10 in the PyCharm Community Edition en
 task_4  
 The aim of the exercise was to :  
 • recalculate geodetic coordinates according to the GRS80 ellipsoid of six points per coordinate in three different systems:  
-  - Gauss-Krüger mapping  
-  - System 1992 (PL-1992)  
-  - System 2000 (PL-2000)  
+Gauss-Krüger mapping  
+System 1992 (PL-1992)  
+System 2000 (PL-2000)  
 • calculate an elementary length scale  
 • calculate the distortion for 1km.  
 Additionally, the area of the rectangle had to be calculated from four points,  
